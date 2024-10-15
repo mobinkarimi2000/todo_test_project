@@ -1,7 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
 class URLPath {
-  static const BASE_URL = '';
+  static const BASE_URL = 'https://dummyjson.com/';
+  static const TODO = 'todos/';
+  static const ADD_TODO = 'todos/add';
+  static const TODO_LIST = 'todos/users';
 }
 
 class Constants {}

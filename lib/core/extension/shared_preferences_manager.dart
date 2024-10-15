@@ -6,16 +6,16 @@ class SharedPreferencesManager {
   final SharedPreferences _sharedPreferences;
   SharedPreferencesManager(this._sharedPreferences);
 
-  void setPersonID(int id) {
+  void setUserID(int id) {
     _sharedPreferences.setInt(SharedPreferencesKeys.UserID, id);
   }
 
-  void clearPersonID() {
+  void clearUserID() {
     _sharedPreferences.remove(SharedPreferencesKeys.UserID);
   }
 
-  int? getPersonID() {
-    int? personID = _sharedPreferences.getInt(SharedPreferencesKeys.UserID);
-    return personID;
+  int? getUserID() {
+    int? userID = _sharedPreferences.getInt(SharedPreferencesKeys.UserID);
+    return userID;
   }
 }

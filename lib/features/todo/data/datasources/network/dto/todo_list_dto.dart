@@ -1,16 +1,16 @@
-import 'task_model.dart';
+import 'package:todo_test_project/features/todo/data/datasources/network/dto/todo_dto.dart';
 
-class TaskListModel {
-  List<TaskModel>? todos;
+class TodoListDto {
+  List<TodoDto>? todos;
   int? total;
   int? skip;
   int? limit;
 
-  TaskListModel({this.todos, this.total, this.skip, this.limit});
+  TodoListDto({this.todos, this.total, this.skip, this.limit});
 
-  factory TaskListModel.fromJson(Map<String, dynamic> json) => TaskListModel(
+  factory TodoListDto.fromJson(Map<String, dynamic> json) => TodoListDto(
         todos: (json['todos'] as List<dynamic>?)
-            ?.map((e) => TaskModel.fromJson(e as Map<String, dynamic>))
+            ?.map((e) => TodoDto.fromJson(e as Map<String, dynamic>))
             .toList(),
         total: json['total'] as int?,
         skip: json['skip'] as int?,
