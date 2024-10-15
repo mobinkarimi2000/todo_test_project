@@ -16,7 +16,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RouteNames.taskList,
       name: RouteNames.splashScreen,
-      builder: (context, state) => const TaskListScreen(),
+      builder: (context, state) => TaskListScreen(),
     ),
   ],
 );

@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo_test_project/core/locator/locator.dart';
+import 'package:todo_test_project/features/todo/presentation/controllers/todo_controller.dart';
+import 'package:todo_test_project/features/todo/presentation/widgets/todo_list_widget.dart';
 
-class TaskListScreen extends StatefulWidget {
-  const TaskListScreen({super.key});
+class TaskListScreen extends StatelessWidget {
+  TaskListScreen({super.key});
+  final TodoController todoController = Get.put(locator<TodoController>());
 
-  @override
-  State<TaskListScreen> createState() => _TaskListScreenState();
-}
-
-class _TaskListScreenState extends State<TaskListScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      floatingActionButton: IconButton(
+        onPressed: () {},
+        icon: const Icon(
+          Icons.add_rounded,
+        ),
+        color: Colors.white,
+      ),
+      body: Column(
+        children: [
+          TodoListWidget(),
+        ],
+      ),
+    );
   }
 }

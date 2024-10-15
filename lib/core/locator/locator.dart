@@ -8,6 +8,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_test_project/core/extension/dio_extension.dart';
 import 'package:todo_test_project/core/router/router.dart';
 import 'package:todo_test_project/core/utils/utils.dart';
+import 'package:todo_test_project/features/todo/data/datasources/network/abstraction/todo_data_source.dart';
+import 'package:todo_test_project/features/todo/data/datasources/network/impl/todo_data_source_impl.dart';
+import 'package:todo_test_project/features/todo/data/datasources/network/mapper/todo_list_mapper.dart';
+import 'package:todo_test_project/features/todo/data/datasources/network/mapper/todo_mapper.dart';
+import 'package:todo_test_project/features/todo/data/repositories/todo_repository_impl.dart';
+import 'package:todo_test_project/features/todo/domain/repositories/todo_repository.dart';
+import 'package:todo_test_project/features/todo/domain/usecases/add_todo_use_case.dart';
+import 'package:todo_test_project/features/todo/domain/usecases/delete_todo_use_case.dart';
+import 'package:todo_test_project/features/todo/domain/usecases/get_todo_list_use_case.dart';
+import 'package:todo_test_project/features/todo/domain/usecases/update_todo_use_case.dart';
+import 'package:todo_test_project/features/todo/presentation/controllers/todo_controller.dart';
 
 import '../extension/shared_preferences_manager.dart';
 
@@ -15,6 +26,7 @@ GetIt locator = GetIt.instance;
 setupInjection() async {
   await provideSharedPreferences();
   provideSharedPreferencesManager();
+  provideTodo();
 }
 
 void provideSharedPreferencesManager() {
@@ -72,26 +84,42 @@ void provideDio() {
           await Future.delayed(const Duration(seconds: 3));
           return handler.resolve(await dio.fetch(e.requestOptions));
         }
-        // if (e.response?.statusCode == 403 || e.response?.statusCode == 401) {
-        //   sharedPreferencesManager.clearToken();
-        //   // If a 401 response is received, refresh the access token
 
-        //   if (sharedPreferencesManager.getRefreshToken()?.isNotEmpty ?? false) {
-        //     String? newAccessToken = await Utils.refreshToken();
-        //     if (newAccessToken?.isNotEmpty ?? false) {
-        //       // Update the request header with the new access token
-        //       e.requestOptions.headers['Authorization'] =
-        //           'Bearer $newAccessToken';
-
-        //       // Repeat the request with the updated header
-        //       return handler.resolve(await dio.fetch(e.requestOptions));
-        //     }
-        //   }
-
-        // }
         return handler.next(e);
       },
     ),
   );
   locator.registerLazySingleton<Dio>(() => dio);
+}
+
+provideTodo() {
+  //mapper
+  locator.registerSingleton<TodoMapper>(TodoMapper());
+  locator.registerSingleton<TodoListMapper>(TodoListMapper());
+
+  //data source
+  locator.registerSingleton<TodoDataSource>(TodoDataSourceImpl(locator()));
+
+  //repository
+  locator.registerSingleton<TodoRepository>(TodoRepositoryImpl(
+    locator(),
+    locator(),
+    locator(),
+  ));
+
+  //usecases
+  locator.registerSingleton<AddTodoListUseCase>(AddTodoListUseCase(locator()));
+  locator.registerSingleton<UpdateTodoListUseCase>(
+      UpdateTodoListUseCase(locator()));
+  locator.registerSingleton<GetTodoListUseCase>(GetTodoListUseCase(locator()));
+  locator.registerSingleton<DeleteTodoListUseCase>(
+      DeleteTodoListUseCase(locator()));
+
+  //controller
+  locator.registerSingleton<TodoController>(TodoController(
+    locator(),
+    locator(),
+    locator(),
+    locator(),
+  ));
 }
