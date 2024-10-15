@@ -17,6 +17,9 @@ class TodoController extends GetxController {
   final DeleteTodoListUseCase _deleteTodoListUseCase;
   int pageNumber = 0;
   int pageSize = 30;
+  var completedFilters = false.obs;
+  var uncompletedFilters = false.obs;
+  var allFilters = true.obs;
 
   final List<TodoModel> todoList = [];
 
@@ -26,6 +29,54 @@ class TodoController extends GetxController {
     this._updateTodoListUseCase,
     this._deleteTodoListUseCase,
   );
+  showAll() {
+    allFilters.value = true;
+    completedFilters.value = false;
+    uncompletedFilters.value = false;
+    if (todoList.isEmpty) {
+      state.value = state.value.copyWith(newTodoListStatus: TodoListEmpty());
+    } else {
+      state.value = state.value
+          .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
+    }
+  }
+
+  showCompleted() {
+    allFilters.value = false;
+    completedFilters.value = true;
+    uncompletedFilters.value = false;
+
+    if (todoList.isEmpty) {
+      state.value = state.value.copyWith(newTodoListStatus: TodoListEmpty());
+    } else {
+      state.value = state.value.copyWith(
+          newTodoListStatus: TodoListCompleted(
+              list: todoList
+                  .where(
+                    (element) => element.completed ?? false,
+                  )
+                  .toList()));
+    }
+  }
+
+  showUncompleted() {
+    allFilters.value = false;
+    completedFilters.value = false;
+    uncompletedFilters.value = true;
+
+    if (todoList.isEmpty) {
+      state.value = state.value.copyWith(newTodoListStatus: TodoListEmpty());
+    } else {
+      state.value = state.value.copyWith(
+          newTodoListStatus: TodoListCompleted(
+              list: todoList
+                  .where(
+                    (element) => !(element.completed ?? false),
+                  )
+                  .toList()));
+    }
+  }
+
   deleteTodo(int id) async {
     final result = await _deleteTodoListUseCase(id);
     result.fold(
@@ -38,6 +89,12 @@ class TodoController extends GetxController {
           state.value = state.value
               .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
+        }
       },
       (success) {
         todoList.removeWhere((element) => element.id == id);
@@ -47,6 +104,12 @@ class TodoController extends GetxController {
         } else {
           state.value = state.value
               .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
+        }
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
         }
       },
     );
@@ -68,6 +131,12 @@ class TodoController extends GetxController {
           state.value = state.value
               .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
+        }
       },
       (success) {
         final index =
@@ -82,6 +151,12 @@ class TodoController extends GetxController {
           state.value = state.value
               .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
+        }
       },
     );
   }
@@ -89,7 +164,14 @@ class TodoController extends GetxController {
   addTodo(TodoModel todoModel) async {
     final result = await _addTodoListUseCase(todoModel);
     result.fold(
-      (failure) {},
+      (failure) {
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
+        }
+      },
       (success) {
         todoList.insert(0, success);
 
@@ -99,6 +181,12 @@ class TodoController extends GetxController {
         } else {
           state.value = state.value
               .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
+        }
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
         }
       },
     );
@@ -135,6 +223,12 @@ class TodoController extends GetxController {
         } else {
           state.value = state.value
               .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
+        }
+        if (completedFilters.value) {
+          showCompleted();
+        }
+        if (uncompletedFilters.value) {
+          showUncompleted();
         }
       },
     );
