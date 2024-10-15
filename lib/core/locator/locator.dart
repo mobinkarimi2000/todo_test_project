@@ -26,6 +26,8 @@ GetIt locator = GetIt.instance;
 setupInjection() async {
   await provideSharedPreferences();
   provideSharedPreferencesManager();
+  provideDioBaseOptions();
+  provideDio();
   provideTodo();
 }
 

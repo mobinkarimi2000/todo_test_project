@@ -9,7 +9,6 @@ import 'package:todo_test_project/features/todo/data/datasources/network/abstrac
 import 'package:todo_test_project/features/todo/data/datasources/network/dto/todo_dto.dart';
 import 'package:todo_test_project/features/todo/data/datasources/network/dto/todo_list_dto.dart';
 import 'package:todo_test_project/features/todo/domain/models/todo_list_params.dart';
-import 'package:todo_test_project/main.dart';
 
 class TodoDataSourceImpl extends TodoDataSource {
   final Dio _dio;
@@ -18,8 +17,8 @@ class TodoDataSourceImpl extends TodoDataSource {
   @override
   Future<Unit> addTodo(TodoDto dto) async {
     try {
-      final response = await _dio.put(
-        '${URLPath.BASE_URL}${URLPath.TODO}',
+      final response = await _dio.post(
+        '${URLPath.BASE_URL}${URLPath.ADD_TODO}',
         data: {
           'todo': dto.todo,
           'completed': dto.completed,
@@ -32,7 +31,7 @@ class TodoDataSourceImpl extends TodoDataSource {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return unit;
       } else {
         throw RestApiException(response.statusCode, response.statusMessage);
@@ -62,11 +61,11 @@ class TodoDataSourceImpl extends TodoDataSource {
   @override
   Future<TodoListDto> getTodoList(TodoListParams params) async {
     try {
-      final response = await _dio.put(
-        '${URLPath.BASE_URL}${URLPath.TODO_LIST}/${sharedPreferencesManager.getUserID()}',
-        data: {
-          'limit': params.pageNumber,
-          'skip': params.pageSize,
+      final response = await _dio.get(
+        '${URLPath.BASE_URL}${URLPath.TODO_LIST}/${5}',
+        queryParameters: {
+          'limit': params.pageSize,
+          'skip': params.pageNumber,
         },
         options: Options(
           headers: {
@@ -89,7 +88,7 @@ class TodoDataSourceImpl extends TodoDataSource {
   Future<Unit> updateTodo(TodoDto dto) async {
     try {
       final response = await _dio.put(
-        '${URLPath.BASE_URL}${URLPath.TODO}/$id',
+        '${URLPath.BASE_URL}${URLPath.TODO}${dto.id}',
         data: {
           'completed': dto.completed,
         },

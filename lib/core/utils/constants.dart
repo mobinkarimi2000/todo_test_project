@@ -4,7 +4,7 @@ class URLPath {
   static const BASE_URL = 'https://dummyjson.com/';
   static const TODO = 'todos/';
   static const ADD_TODO = 'todos/add';
-  static const TODO_LIST = 'todos/users';
+  static const TODO_LIST = 'todos/user';
 }
 
 class Constants {}

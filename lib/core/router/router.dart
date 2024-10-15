@@ -11,11 +11,11 @@ class NavigationService {
 
 final GoRouter router = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
-  initialLocation: RouteNames.taskList,
+  initialLocation: RouteNames.todoList,
   routes: [
     GoRoute(
-      path: RouteNames.taskList,
-      name: RouteNames.splashScreen,
+      path: RouteNames.todoList,
+      name: RouteNames.todoList,
       builder: (context, state) => TaskListScreen(),
     ),
   ],

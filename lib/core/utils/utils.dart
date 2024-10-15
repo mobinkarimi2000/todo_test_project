@@ -59,7 +59,7 @@ class Utils {
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
-                                              color: theme.primaryColor),
+                                              color: Colors.grey.shade800),
                                         ),
                                       ),
                                     ],
@@ -68,17 +68,15 @@ class Utils {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                   child: Container(
-                                    width: double.infinity,
-                                    height: 2,
-                                    color: theme.primaryColor,
-                                  ),
+                                      width: double.infinity,
+                                      height: 2,
+                                      color: Colors.grey.shade700),
                                 ),
                                 Row(
                                   children: [
                                     Expanded(
                                       child: Text(message,
-                                          style: TextStyle(
-                                              color: theme.primaryColor)),
+                                          style: const TextStyle(color: Colors.grey)),
                                     ),
                                   ],
                                 ),

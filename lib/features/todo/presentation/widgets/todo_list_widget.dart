@@ -38,11 +38,11 @@ class TodoListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget shownWidget = Container();
     List<TodoModel> list = [];
-
+    refreshScreen();
     return Expanded(
       child: Obx(
         () {
-          final state = todoController.state;
+          final state = todoController.state.value;
           bool isLoadingMore = false;
           if (state.todoListStatus is TodoListLoading) {
             shownWidget = _createLoadingListWidget();
@@ -131,7 +131,7 @@ class TodoListWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           itemBuilder: (context, index) {
             return FadeIn(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               child: TodoCard(
                 todoModel: list[index],
               ),

@@ -9,7 +9,7 @@ import 'package:todo_test_project/features/todo/presentation/controllers/status/
 import 'package:todo_test_project/features/todo/presentation/controllers/todo_state.dart';
 
 class TodoController extends GetxController {
-  TodoState state = TodoState(todoListStatus: TodoListInitial());
+  var state = TodoState(todoListStatus: TodoListInitial()).obs;
 
   final GetTodoListUseCase _getTodoListUseCase;
   final AddTodoListUseCase _addTodoListUseCase;
@@ -33,10 +33,11 @@ class TodoController extends GetxController {
       (success) {
         todoList.removeWhere((element) => element.id == id);
         if (todoList.isEmpty) {
-          state = state.copyWith(newTodoListStatus: TodoListEmpty());
+          state.value =
+              state.value.copyWith(newTodoListStatus: TodoListEmpty());
         } else {
-          state = state.copyWith(
-              newTodoListStatus: TodoListCompleted(list: todoList));
+          state.value = state.value
+              .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
       },
     );
@@ -53,10 +54,11 @@ class TodoController extends GetxController {
         todoList.insert(index, todoModel);
 
         if (todoList.isEmpty) {
-          state = state.copyWith(newTodoListStatus: TodoListEmpty());
+          state.value =
+              state.value.copyWith(newTodoListStatus: TodoListEmpty());
         } else {
-          state = state.copyWith(
-              newTodoListStatus: TodoListCompleted(list: todoList));
+          state.value = state.value
+              .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
       },
     );
@@ -70,10 +72,11 @@ class TodoController extends GetxController {
         todoList.insert(0, todoModel);
 
         if (todoList.isEmpty) {
-          state = state.copyWith(newTodoListStatus: TodoListEmpty());
+          state.value =
+              state.value.copyWith(newTodoListStatus: TodoListEmpty());
         } else {
-          state = state.copyWith(
-              newTodoListStatus: TodoListCompleted(list: todoList));
+          state.value = state.value
+              .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
       },
     );
@@ -85,17 +88,18 @@ class TodoController extends GetxController {
   }
 
   getTodoList() async {
-    if (pageNumber > 1) {
-      state = state.copyWith(newTodoListStatus: TodoListLoading());
+    if (pageNumber == 1) {
+      state.value = state.value.copyWith(newTodoListStatus: TodoListLoading());
     } else {
-      state = state.copyWith(newTodoListStatus: TodoListLoadingMore());
+      state.value =
+          state.value.copyWith(newTodoListStatus: TodoListLoadingMore());
     }
     final result = await _getTodoListUseCase(
         TodoListParams(pageNumber: pageNumber, pageSize: pageSize));
     result.fold(
       (failure) {
-        state =
-            state.copyWith(newTodoListStatus: TodoListError(failure: failure));
+        state.value = state.value
+            .copyWith(newTodoListStatus: TodoListError(failure: failure));
       },
       (success) {
         if (success.todos?.isNotEmpty ?? false) {
@@ -104,10 +108,11 @@ class TodoController extends GetxController {
         todoList.addAll(success.todos ?? []);
 
         if (todoList.isEmpty) {
-          state = state.copyWith(newTodoListStatus: TodoListEmpty());
+          state.value =
+              state.value.copyWith(newTodoListStatus: TodoListEmpty());
         } else {
-          state = state.copyWith(
-              newTodoListStatus: TodoListCompleted(list: todoList));
+          state.value = state.value
+              .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
         }
       },
     );
