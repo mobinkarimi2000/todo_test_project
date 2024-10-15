@@ -5,7 +5,7 @@ import 'package:todo_test_project/features/todo/domain/models/todo_list_params.d
 
 abstract class TodoDataSource {
   Future<TodoListDto> getTodoList(TodoListParams params);
-  Future<Unit> addTodo(TodoDto dto);
+  Future<TodoDto> addTodo(TodoDto dto);
   Future<Unit> updateTodo(TodoDto dto);
   Future<Unit> deleteTodo(int id);
 }

@@ -15,7 +15,7 @@ class TodoDataSourceImpl extends TodoDataSource {
 
   TodoDataSourceImpl(this._dio);
   @override
-  Future<Unit> addTodo(TodoDto dto) async {
+  Future<TodoDto> addTodo(TodoDto dto) async {
     try {
       final response = await _dio.post(
         '${URLPath.BASE_URL}${URLPath.ADD_TODO}',
@@ -32,7 +32,7 @@ class TodoDataSourceImpl extends TodoDataSource {
       );
 
       if (response.statusCode == 201) {
-        return unit;
+        return TodoDto.fromJson(response.data);
       } else {
         throw RestApiException(response.statusCode, response.statusMessage);
       }
@@ -62,7 +62,7 @@ class TodoDataSourceImpl extends TodoDataSource {
   Future<TodoListDto> getTodoList(TodoListParams params) async {
     try {
       final response = await _dio.get(
-        '${URLPath.BASE_URL}${URLPath.TODO_LIST}/${5}',
+        '${URLPath.BASE_URL}${URLPath.TODO}',
         queryParameters: {
           'limit': params.pageSize,
           'skip': params.pageNumber,
@@ -88,7 +88,7 @@ class TodoDataSourceImpl extends TodoDataSource {
   Future<Unit> updateTodo(TodoDto dto) async {
     try {
       final response = await _dio.put(
-        '${URLPath.BASE_URL}${URLPath.TODO}${dto.id}',
+        '${URLPath.BASE_URL}${URLPath.TODO}/${dto.id}',
         data: {
           'completed': dto.completed,
         },

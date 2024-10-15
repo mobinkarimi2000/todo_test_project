@@ -15,7 +15,7 @@ class TodoController extends GetxController {
   final AddTodoListUseCase _addTodoListUseCase;
   final UpdateTodoListUseCase _updateTodoListUseCase;
   final DeleteTodoListUseCase _deleteTodoListUseCase;
-  int pageNumber = 1;
+  int pageNumber = 0;
   int pageSize = 30;
 
   final List<TodoModel> todoList = [];
@@ -29,7 +29,16 @@ class TodoController extends GetxController {
   deleteTodo(int id) async {
     final result = await _deleteTodoListUseCase(id);
     result.fold(
-      (failure) {},
+      (failure) {
+        todoList.removeWhere((element) => element.id == id);
+        if (todoList.isEmpty) {
+          state.value =
+              state.value.copyWith(newTodoListStatus: TodoListEmpty());
+        } else {
+          state.value = state.value
+              .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
+        }
+      },
       (success) {
         todoList.removeWhere((element) => element.id == id);
         if (todoList.isEmpty) {
@@ -46,7 +55,20 @@ class TodoController extends GetxController {
   updateTodo(TodoModel todoModel) async {
     final result = await _updateTodoListUseCase(todoModel);
     result.fold(
-      (failure) {},
+      (failure) {
+        final index =
+            todoList.indexWhere((element) => element.id == todoModel.id);
+        todoList.removeWhere((element) => element.id == todoModel.id);
+        todoList.insert(index, todoModel);
+
+        if (todoList.isEmpty) {
+          state.value =
+              state.value.copyWith(newTodoListStatus: TodoListEmpty());
+        } else {
+          state.value = state.value
+              .copyWith(newTodoListStatus: TodoListCompleted(list: todoList));
+        }
+      },
       (success) {
         final index =
             todoList.indexWhere((element) => element.id == todoModel.id);
@@ -69,7 +91,7 @@ class TodoController extends GetxController {
     result.fold(
       (failure) {},
       (success) {
-        todoList.insert(0, todoModel);
+        todoList.insert(0, success);
 
         if (todoList.isEmpty) {
           state.value =
@@ -84,11 +106,11 @@ class TodoController extends GetxController {
 
   pageToInitialTodoList() {
     todoList.clear();
-    pageNumber = 1;
+    pageNumber = 0;
   }
 
   getTodoList() async {
-    if (pageNumber == 1) {
+    if (pageNumber == 0) {
       state.value = state.value.copyWith(newTodoListStatus: TodoListLoading());
     } else {
       state.value =

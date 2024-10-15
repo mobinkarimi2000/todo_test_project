@@ -18,12 +18,12 @@ class TodoRepositoryImpl extends TodoRepository {
   TodoRepositoryImpl(
       this._todoDataSource, this._todoMapper, this._todoListMapper);
   @override
-  Future<Either<Failure, Unit>> addTodo(TodoModel todoModel) async {
+  Future<Either<Failure, TodoModel>> addTodo(TodoModel todoModel) async {
     try {
-      final unit =
+      final dto =
           await _todoDataSource.addTodo(_todoMapper.mapToEntity(todoModel));
-
-      return right(unit);
+      final model = _todoMapper.mapFromEntity(dto);
+      return right(model);
     } on NoInternetConnectionException {
       return left(NoInternetConnectionFailure());
     } on BadRequestException catch (e) {
